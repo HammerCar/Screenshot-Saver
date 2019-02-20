@@ -19,23 +19,39 @@ namespace ScreenshotSaver
             CheckFolder();
 
             string path = GetImagePath();
-            sc.CaptureScreenToFile(path, ImageFormat.Png);
+            sc.CaptureScreenToFile(path, StringToImageFormat(Properties.Settings.Default.ScreenshotFileType));
 
             return path;
         }
 
+        private string GetImageName()
+        {
+            return "screenshot-" + DateTime.Now.ToShortDateString() + "-" + DateTime.Now.ToLongTimeString() + "." + Properties.Settings.Default.ScreenshotFileType;
+        }
+
         private string GetImagePath()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Screenshots", 
-                "screenshot-" + DateTime.Now.ToShortDateString() + "-" + DateTime.Now.ToLongTimeString() + ".png");
+            return Path.Combine(Properties.Settings.Default.ScreenshotFolder, GetImageName());
         }
 
         private void CheckFolder()
         {
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Screenshots");
+            string path = Properties.Settings.Default.ScreenshotFolder;
             bool exists = Directory.Exists(path);
             if (!exists)
                 Directory.CreateDirectory(path);
+        }
+
+        private ImageFormat StringToImageFormat(string format)
+        {
+            if (format == "jpeg")
+                return ImageFormat.Jpeg;
+            else if (format == "gif")
+                return ImageFormat.Gif;
+            else if (format == "bmp")
+                return ImageFormat.Bmp;
+            else
+                return ImageFormat.Png;
         }
     }
 }

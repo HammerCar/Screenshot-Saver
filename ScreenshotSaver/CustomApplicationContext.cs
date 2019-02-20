@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -21,6 +22,16 @@ namespace ScreenshotSaver
 		/// </summary>
 		public CustomApplicationContext()
         {
+            if (Properties.Settings.Default.ScreenshotFolder == "")
+            {
+                // First time setup
+                Properties.Settings.Default.ScreenshotFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Screenshots");
+
+                Properties.Settings.Default.Save();
+
+                ChangeStartup(true);
+            }
+
             InitializeContext();
             screenshotManager = new ScreenshotManager();
         }
@@ -38,6 +49,20 @@ namespace ScreenshotSaver
             notifyIcon.ContextMenuStrip.Items.Add(new ToolStripMenuItem("&Exit", null, exitItem_Click));
         }
 
+        public void ChangeStartup(bool isChecked)
+        {
+            if (isChecked)
+            {
+                Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                key.SetValue("ScreenshotSaver", Application.StartupPath);
+            }
+            else
+            {
+                Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                key.DeleteValue("ScreenshotSaver", false);
+            }
+        }
+
         private Form settingsForm;
         private Form helpForm;
 
@@ -48,7 +73,8 @@ namespace ScreenshotSaver
             string ssPath = screenshotManager.TakeScreenshot();
             lastScreenshotPath = ssPath;
 
-            notifyIcon.ShowBalloonTip(3000, "Screenshot Saved", "Saved to " + ssPath, ToolTipIcon.Info);
+            if (Properties.Settings.Default.Notification)
+                notifyIcon.ShowBalloonTip(3000, "Screenshot Saved", "Saved to " + ssPath, ToolTipIcon.Info);
         }
 
         private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
@@ -58,7 +84,16 @@ namespace ScreenshotSaver
 
         private void OpenSettings()
         {
-            MessageBox.Show("settings");
+            if (settingsForm == null)
+            {
+                settingsForm = new Settings(this);
+                settingsForm.FormClosed += settingsForm_Closed;
+                settingsForm.Show();
+            }
+            else
+            {
+                settingsForm.Focus();
+            }
         }
 
         private void OpenHelp()
@@ -94,6 +129,10 @@ namespace ScreenshotSaver
         {
             OpenHelp();
         }
+
+
+
+        private void settingsForm_Closed(object sender, EventArgs e) { settingsForm = null; }
 
         # endregion Event Handlers
 
