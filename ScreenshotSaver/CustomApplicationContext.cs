@@ -64,7 +64,7 @@ namespace ScreenshotSaver
         }
 
         private Form settingsForm;
-        private Form helpForm;
+        private Form aboutForm;
 
         private string lastScreenshotPath;
 
@@ -98,7 +98,16 @@ namespace ScreenshotSaver
 
         private void OpenHelp()
         {
-            MessageBox.Show("help");
+            if (aboutForm == null)
+            {
+                aboutForm = new About();
+                aboutForm.FormClosed += aboutForm_Closed;
+                aboutForm.Show();
+            }
+            else
+            {
+                aboutForm.Focus();
+            }
         }
 
 
@@ -133,6 +142,7 @@ namespace ScreenshotSaver
 
 
         private void settingsForm_Closed(object sender, EventArgs e) { settingsForm = null; }
+        private void aboutForm_Closed(object sender, EventArgs e) { aboutForm = null; }
 
         # endregion Event Handlers
 
@@ -147,7 +157,7 @@ namespace ScreenshotSaver
             notifyIcon = new NotifyIcon(components)
             {
                 ContextMenuStrip = new ContextMenuStrip(),
-                Icon = new Icon(IconFileName),
+                Icon = Properties.Resources.icon,
                 Text = DefaultTooltip,
                 Visible = true
             };
@@ -184,7 +194,7 @@ namespace ScreenshotSaver
         {
             // before we exit, let forms clean themselves up.
             if (settingsForm != null) { settingsForm.Close(); }
-            if (helpForm != null) { helpForm.Close(); }
+            if (aboutForm != null) { aboutForm.Close(); }
 
             notifyIcon.Visible = false; // should remove lingering tray icon
             base.ExitThreadCore();

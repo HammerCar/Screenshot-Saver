@@ -56,7 +56,7 @@ namespace ScreenshotSaver
             comboBoxFileType.Items.Add(ImageFormat.Gif.ToString().ToLower());
             comboBoxFileType.Items.Add(ImageFormat.Bmp.ToString().ToLower());
 
-            comboBoxFileType.SelectedText = Properties.Settings.Default.ScreenshotFileType;
+            comboBoxFileType.SelectedItem = Properties.Settings.Default.ScreenshotFileType;
         }
 
         private void OpenFolderDialog()

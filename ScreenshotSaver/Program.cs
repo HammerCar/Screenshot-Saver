@@ -23,7 +23,7 @@ namespace ScreenshotSaver
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ScreenshotSaver Terminated Unexpectedly",
+                MessageBox.Show(ex.Message, "Screenshot Saver Terminated Unexpectedly",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

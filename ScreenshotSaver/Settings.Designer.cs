@@ -209,9 +209,9 @@
             this.labelVersion.Location = new System.Drawing.Point(13, 13);
             this.labelVersion.Margin = new System.Windows.Forms.Padding(10);
             this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(150, 20);
+            this.labelVersion.Size = new System.Drawing.Size(128, 20);
             this.labelVersion.TabIndex = 0;
-            this.labelVersion.Text = "Current Version: 1.0";
+            this.labelVersion.Text = "Current Version: ";
             // 
             // Settings
             // 
